@@ -8,12 +8,16 @@ function App(props) {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    const getLocalStorage = async () => {
         if(!localStorage.getItem('homy')){
-            localStorage.setItem('homy', JSON.stringify(localstorage));
+            await localStorage.setItem('homy', JSON.stringify(localstorage));
+            await dispatch(localstorageFetched(JSON.parse(localStorage.getItem('homy'))));
             return;
         }
+    };
 
+    useEffect(() => {
+        getLocalStorage();
         dispatch(localstorageFetched(JSON.parse(localStorage.getItem('homy'))));
         // eslint-disable-next-line
     }, [])

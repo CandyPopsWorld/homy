@@ -1,6 +1,4 @@
-import { searchProviders } from "../data/commands";
-
-export const validateTerm = (term) => {
+export const validateTerm = (term, searchProviders) => {
     if(term.includes('~[') && term.includes(']~')){
         let localTerm = term.split(']~').pop();
         const array = [];
@@ -9,7 +7,6 @@ export const validateTerm = (term) => {
                 array.push({term: localTerm, url: provider})
             }
         });
-
         return array;
     }
     return [{term, url: ''}];

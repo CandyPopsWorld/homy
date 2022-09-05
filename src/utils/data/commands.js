@@ -1,6 +1,7 @@
+import CryptoJS from 'crypto-js';
 export const searchProviders = [
-    {code: `g/`, provider: 'https://www.google.ru/search?q='},
-    {code: `ya/`, provider: 'https://yandex.ru/search/?text='},
-    {code: 'yu/', provider: 'https://www.youtube.com/results?search_query='},
-    {code: 'gh/', provider: 'https://github.com/search?q='}
+    {code: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_GOOGLE_CODE, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString(), provider: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_GOOGLE, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString()},
+    {code: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_YANDEX_CODE, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString(), provider: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_YANDEX, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString()},
+    {code: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_YOUTUBE_CODE, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString(), provider: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_YOUTUBE, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString()},
+    {code: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_GITHUB_CODE, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString(), provider: CryptoJS.AES.encrypt(process.env.REACT_APP_SEARCH_DEFAULT_PROVIDER_GITHUB, process.env.REACT_APP_SECRET_KEY_ENCRYPT).toString()}
 ];
