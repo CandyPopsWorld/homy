@@ -1,0 +1,25 @@
+@import '../../style/mixin.scss';
+
+.homy_search_block{
+    width: 100vw;
+    height: 20vh;
+    @include flex;
+    &_input{
+        background-color: transparent;
+        color: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        width: 600px;
+        height: 30px;
+        outline: none;
+        padding: 10px;
+        font-size: 1.2em;
+        &:focus{
+            border: 2px solid white;
+            border-radius: 10px;
+        }
+        &::placeholder{
+            color: white;
+        }
+    }
+}
