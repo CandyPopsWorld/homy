@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './Search.scss';
-import { changeSearchTerm, clearSearchTerm } from '../../redux/actions';
+import { changeDisplaySearchHints, writeRequest } from '../../redux/actions/requests';
+import { changeSearchTerm, clearSearchTerm } from '../../redux/actions/search';
 import { validateTerm } from '../../utils/functions/validateTerm';
+import SearchHints from '../searchHints/SearchHints';
+import { transformNumber } from '../../utils/functions/transformNumber';
 function Search(props) {
 
     const dispatch = useDispatch();
@@ -11,8 +14,10 @@ function Search(props) {
 
     const _baseUrl = useSelector(state => state.settings.settings.baseUrl);
     const searchProviders = useSelector(state => state.settings.settings.searchProviders);
+    const searchTerm = useSelector(state => state.search.searchTerm);
 
-    const [searchTerm, setSearchTerm] = useState('');
+    //eslint-disable-next-line
+    const [searchTermg, setSearchTerm] = useState('');
 
     const onChangeSearchTerm = (e) => {
         let value = e.target.value;
@@ -20,12 +25,38 @@ function Search(props) {
         dispatch(changeSearchTerm(value));
     };
 
-    const onSubmitInput = (e) => {
+    const onSubmitInput = async (e) => {
         if(e.code !== 'Enter' || searchTerm === ''){
             return;
         }
-        createLink(validateTerm(searchTerm, searchProviders));
-        clearSearch();
+        const searchArr = await validateTerm(searchTerm, searchProviders);
+        await writeRequsetsData(searchArr);
+        await createLink(searchArr);
+        await clearSearch();
+    };
+
+    const writeRequsetsData = async (arr) => {
+        let globalCode = '';
+        let providersNames = [];
+        await arr.forEach(item => {
+            globalCode += item.code;
+            providersNames.push(item.providerName);
+        });
+        const requestObj = {
+            providers: globalCode, 
+            term: arr[0].term,
+            fullTerm: arr[0].fullTerm,
+            providersNames: providersNames,
+            time: {
+                year: transformNumber(new Date().getFullYear()),
+                month: transformNumber(new Date().getMonth()),
+                day: transformNumber(new Date().getDay()),
+                hour: transformNumber(new Date().getHours()),
+                minutes: transformNumber(new Date().getMinutes()),
+                seconds: transformNumber(new Date().getSeconds())
+            }
+        };
+        dispatch(writeRequest(requestObj));
     };
 
     const clearSearch = () => {
@@ -48,6 +79,7 @@ function Search(props) {
         if(searchRef){
             searchRef.current.focus();
         }
+        // eslint-disable-next-line
     }, [])
 
     return (
@@ -59,7 +91,16 @@ function Search(props) {
             value={searchTerm}
             onChange={onChangeSearchTerm}
             onKeyDown={onSubmitInput}
-            ref={searchRef}/>
+            ref={searchRef}
+            onFocus={() => {
+                dispatch(changeDisplaySearchHints());
+            }}
+            onBlur={() => {
+                setTimeout(() => {
+                    dispatch(changeDisplaySearchHints());
+                }, 100)
+            }}/>
+            <SearchHints searchRef={searchRef}/>
         </div>
     );
 }

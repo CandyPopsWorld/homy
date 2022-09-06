@@ -1,8 +1,8 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { changeSearchTerm, clearSearchTerm } from "../actions";
+import { changeSearchTerm, clearSearchTerm } from "../actions/search";
 
 const initialState = {
-    searchTerm: ''
+    searchTerm: '',
 };
 
 const search = createReducer(initialState, builder => {
@@ -11,7 +11,7 @@ const search = createReducer(initialState, builder => {
             state.searchTerm = action.payload;
         })
         .addCase(clearSearchTerm, state => {
-            state.searchTerm = ''
+            state.searchTerm = '';
         })
         .addDefaultCase(() => {});
 });

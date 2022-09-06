@@ -1,0 +1,43 @@
+@import '../../style/mixin.scss';
+.homy_search_hints{
+    position: absolute;
+    width: 600px;
+    height: max-content;
+    max-height: 200px;
+    top: 120px;
+    padding: 10px;
+    background-color: rgba($color: #000000, $alpha: 1);
+    color: white;
+
+    &_item{
+        @include flex($justifyContent: flex-start);
+        width: 600px;
+        z-index: 5;
+        position: relative;
+        height: max-content;
+        max-height: 20px;
+        user-select: none;
+        padding: 5px 0;
+        background-color: rgba($color: #000000, $alpha: 1);
+        color: white;
+        &:hover{
+            background-color: #00111c;
+        }
+
+        &_providers_code{
+            margin-right: 20px;
+            color: gray;
+        }
+
+        &_recent_icon{
+            position: absolute;
+            right: 10px;
+            width: 16px;
+            height: 16px;
+            img{
+                width: inherit;
+                height: inherit;
+            }
+        }
+    }
+}
