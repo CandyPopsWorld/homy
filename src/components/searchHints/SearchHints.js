@@ -14,8 +14,8 @@ function SearchHints({searchRef}) {
         // eslint-disable-next-line
     }, []);
 
-    let elements_hints = recentRequests.map(({providers, term, fullTerm, providersNames}, i) => {
-        return <SearchHintItem key={i} providers={providers} term={term} fullTerm={fullTerm} providersNames={providersNames} searchRef={searchRef}/>
+    let elements_hints = recentRequests.map(({providers, term, fullTerm, providersNames, uid}, i) => {
+        return <SearchHintItem key={i} providers={providers} term={term} fullTerm={fullTerm} providersNames={providersNames} searchRef={searchRef} uid={uid}/>
     });
 
     return (

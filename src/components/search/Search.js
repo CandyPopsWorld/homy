@@ -6,6 +6,7 @@ import { changeSearchTerm, clearSearchTerm } from '../../redux/actions/search';
 import { validateTerm } from '../../utils/functions/validateTerm';
 import SearchHints from '../searchHints/SearchHints';
 import { transformNumber } from '../../utils/functions/transformNumber';
+import { uid } from 'uid';
 function Search(props) {
 
     const dispatch = useDispatch();
@@ -54,7 +55,8 @@ function Search(props) {
                 hour: transformNumber(new Date().getHours()),
                 minutes: transformNumber(new Date().getMinutes()),
                 seconds: transformNumber(new Date().getSeconds())
-            }
+            },
+            uid: uid(1000)
         };
         dispatch(writeRequest(requestObj));
     };
@@ -94,11 +96,6 @@ function Search(props) {
             ref={searchRef}
             onFocus={() => {
                 dispatch(changeDisplaySearchHints());
-            }}
-            onBlur={() => {
-                setTimeout(() => {
-                    dispatch(changeDisplaySearchHints());
-                }, 100)
             }}/>
             <SearchHints searchRef={searchRef}/>
         </div>
