@@ -79,7 +79,7 @@ function Search(props) {
 
     useEffect(() => {
         if(searchRef){
-            searchRef.current.focus();
+            // searchRef.current.focus();
         }
         // eslint-disable-next-line
     }, [])

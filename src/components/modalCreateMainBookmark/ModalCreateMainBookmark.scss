@@ -1,0 +1,34 @@
+@import '../../style/mixin.scss';
+.homy_modal_create_main_bookmark{
+    @include flex($flexDirection: column, $justifyContent: flex-start, $align-items: center);
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 70px;
+    background-color: transparent;
+    z-index: 150;
+    input{
+        outline: none;
+        width: 80%;
+        height: 30px;
+        border: 1px solid white;
+        color: white;
+        background-color: transparent;
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+    button{
+        margin-top: 10px;
+        background-color: rgba($color: #000000, $alpha: .6);
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        &:hover{
+            background-color: rgba($color: #000000, $alpha: .8);
+        }
+    }
+}

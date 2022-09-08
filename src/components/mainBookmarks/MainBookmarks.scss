@@ -1,0 +1,69 @@
+@import '../../style/mixin.scss';
+.homy_main_bookmarks{
+    background-color: transparent;
+    width: 100%;
+    height: 400px;
+    @include flex;
+    &_list{
+        // @include flex($justifyContent: flex-start, $align-items: flex-start, $flexWrap: wrap);
+        @include flex($justifyContent: center, $align-items: flex-start, $flexWrap: wrap);
+        height: 400px;
+        width: 85%;
+        // background-color: rebeccapurple;
+        &_item{
+            cursor: pointer;
+            margin: 10px;
+            @include flex;
+            position: relative;
+            height: 100px;
+            width: 200px;
+            background-color: rgba($color: #000000, $alpha: .7);
+            color: white;
+            transform: scale(1);
+            transition: 0.2s transform;
+            &:hover{
+                transform: scale(1.05);
+                .homy_main_bookmarks_list_item_controls{
+                    display: flex;
+                }
+            }
+            p{
+                position: absolute;
+                bottom: 2px;
+            }
+            &_controls{
+                @include flex;
+                display: none;
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                &_item{
+                    margin: 5px;
+                    i{
+                        &:hover{
+                            color: rebeccapurple;
+                        }
+                    }
+                }
+            }
+        }
+
+        &_create_item{
+            cursor: pointer;
+            margin: 10px;
+            @include flex;
+            height: 100px;
+            width: 200px;
+            background-color: rgba($color: #000000, $alpha: .7);
+            color: white;
+            transform: scale(1);
+            transition: 0.2s transform;
+            &:hover{
+                transform: scale(1.05);
+            }
+            span{
+                font-size: 1.4em;
+            }
+        }
+    }
+}
