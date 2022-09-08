@@ -1,5 +1,6 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { getItemLocalStorage, setItemLocalStorage } from "../../utils/functions/localstorage";
+import {_pathLocalstorage_allRequests, _pathLocalstorage_recentRequests } from "../../utils/data/localstorage";
 import { changeDisplaySearchHints, writeRequest, getRecentRequests, deleteRecentRequestItem, forceChangeDisplaySearchHints } from "../actions/requests";
 
 const initialState = {
@@ -17,24 +18,24 @@ const requests = createReducer(initialState, builder => {
             state.displaySearchHints = action.payload;
         })
         .addCase(writeRequest, (state, action) => {
-            const allRequestsData = getItemLocalStorage(process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE);
+            const allRequestsData = getItemLocalStorage(_pathLocalstorage_allRequests);
             allRequestsData.allRequests.unshift(action.payload);
-            setItemLocalStorage(process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE, allRequestsData);
+            setItemLocalStorage(_pathLocalstorage_allRequests, allRequestsData);
 
-            const recentRequestsData = getItemLocalStorage(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE);
+            const recentRequestsData = getItemLocalStorage(_pathLocalstorage_recentRequests);
             recentRequestsData.recentRequests.unshift(action.payload);
             if(recentRequestsData.recentRequests.length > 3){
                 recentRequestsData.recentRequests = [...recentRequestsData.recentRequests.slice(0, 3)];
             }
             state.recentRequests = recentRequestsData.recentRequests;
-            setItemLocalStorage(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE, recentRequestsData);
+            setItemLocalStorage(_pathLocalstorage_recentRequests, recentRequestsData);
         })
         .addCase(getRecentRequests, state => {
-            const recentRequestsArray = getItemLocalStorage(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE).recentRequests;
+            const recentRequestsArray = getItemLocalStorage(_pathLocalstorage_recentRequests).recentRequests;
             state.recentRequests = recentRequestsArray;
         })
         .addCase(deleteRecentRequestItem, (state, action) => {
-            const allRequestsData =  getItemLocalStorage(process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE);
+            const allRequestsData =  getItemLocalStorage(_pathLocalstorage_allRequests);
             const index = allRequestsData.allRequests.findIndex(item => item.uid === action.payload);
             allRequestsData.allRequests = [...allRequestsData.allRequests.slice(0, index), ...allRequestsData.allRequests.slice(index + 1)];
             let arr = [];
@@ -44,12 +45,12 @@ const requests = createReducer(initialState, builder => {
                     arr.push(item);
                 }
             });
-            setItemLocalStorage(process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE, allRequestsData);
+            setItemLocalStorage(_pathLocalstorage_allRequests, allRequestsData);
             state.recentRequests = arr;
             
-            const recentRequestsData = getItemLocalStorage(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE);
+            const recentRequestsData = getItemLocalStorage(_pathLocalstorage_recentRequests);
             recentRequestsData.recentRequests = state.recentRequests;
-            setItemLocalStorage(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE, recentRequestsData);
+            setItemLocalStorage(_pathLocalstorage_recentRequests, recentRequestsData);
         })
         .addDefaultCase(() => {});
 });

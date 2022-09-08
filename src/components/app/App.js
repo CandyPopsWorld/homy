@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Header from '../header/Header';
 import './App.scss';
-import { localstorage, homyAllRequests, homyReacentRequests } from '../../utils/data/localstorage';
+import { localstorage, homyAllRequests, homyReacentRequests, _pathLocalstorage_homy, _pathLocalstorage_allRequests, _pathLocalstorage_recentRequests } from '../../utils/data/localstorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { localstorageFetched, changeDisplaySettingsModal } from '../../redux/actions/settings';
 import Settings from '../settings/Settings';
@@ -14,21 +14,25 @@ function App(props) {
     const displaySearchHints = useSelector(state => state.requests.displaySearchHints);
 
     const getLocalStorage = async () => {
-        if(!localStorage.getItem(process.env.REACT_APP_HOMY_LOCALSTORAGE)){
-            await localStorage.setItem(process.env.REACT_APP_HOMY_LOCALSTORAGE, JSON.stringify(localstorage));
-            await dispatch(localstorageFetched(JSON.parse(localStorage.getItem(process.env.REACT_APP_HOMY_LOCALSTORAGE))));
+        if(!localStorage.getItem(_pathLocalstorage_homy)){
+            await localStorage.setItem(_pathLocalstorage_homy, JSON.stringify(localstorage));
+            await dispatch(localstorageFetched(JSON.parse(localStorage.getItem(_pathLocalstorage_homy))));
         }
-        if(!localStorage.getItem(process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE)){
-            await localStorage.setItem(process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE, JSON.stringify(homyAllRequests));
+        if(!localStorage.getItem(_pathLocalstorage_allRequests)){
+            await localStorage.setItem(_pathLocalstorage_allRequests, JSON.stringify(homyAllRequests));
         }
-        if(!localStorage.getItem(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE)){
-            await localStorage.setItem(process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE, JSON.stringify(homyReacentRequests));
+        if(!localStorage.getItem(_pathLocalstorage_recentRequests)){
+            await localStorage.setItem(_pathLocalstorage_recentRequests, JSON.stringify(homyReacentRequests));
         }
     };
 
+    const initializationLocalStorage = async () => {
+        await getLocalStorage();
+        await dispatch(localstorageFetched(JSON.parse(localStorage.getItem(_pathLocalstorage_homy))));
+    };
+
     useEffect(() => {
-        getLocalStorage();
-        dispatch(localstorageFetched(JSON.parse(localStorage.getItem(process.env.REACT_APP_HOMY_LOCALSTORAGE))));
+        initializationLocalStorage();
         // eslint-disable-next-line
     }, [])
 

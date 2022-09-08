@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SearchHintItem from '../searchHintItem/SearchHintItem';
 import './SearchHints.scss';
 import { getRecentRequests } from '../../redux/actions/requests';
+import { _pathLocalstorage_allRequests, _pathLocalstorage_recentRequests } from '../../utils/data/localstorage';
 function SearchHints({searchRef}) {
 
     const dispatch = useDispatch();
@@ -10,7 +11,9 @@ function SearchHints({searchRef}) {
     const recentRequests = useSelector(state => state.requests.recentRequests);
 
     useEffect(() => {
-        dispatch(getRecentRequests());
+        if(localStorage.getItem(_pathLocalstorage_allRequests) && localStorage.getItem(_pathLocalstorage_recentRequests)){
+            dispatch(getRecentRequests());
+        }
         // eslint-disable-next-line
     }, []);
 
