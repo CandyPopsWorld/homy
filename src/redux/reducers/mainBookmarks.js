@@ -1,7 +1,8 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { _pathLocalstorage_mainBookmarks } from "../../utils/data/localstorage";
+import { urlsApp } from "../../utils/data/urlsApp";
 import { getItemLocalStorage, setItemLocalStorage } from "../../utils/functions/localstorage";
-import { changeDisplayMainBookmarksModal, createMainBookmark, deleteMainBookmark, forceChangeDisplayMainBookmarksModal, forceChangeDisplayUpdateMainBookmarkModal, mainBookmarksFetched, updateMainBookmark, writeLocalUpdateBookmark } from "../actions/mainBookmarks";
+import { changeDisplayMainBookmarksModal, createMainBookmark, deleteMainBookmark, forceChangeDisplayMainBookmarksModal, forceChangeDisplayUpdateMainBookmarkModal, mainBookmarksFetched, reorderMainBookmarks, updateMainBookmark, writeLocalUpdateBookmark } from "../actions/mainBookmarks";
 
 const initialState = {
     displayCreateModalMainBookmarks: false,
@@ -31,11 +32,23 @@ const mainBookmarks = createReducer(initialState, builder => {
                     break;
                 }
             }
-            if(bool === false){
-                mainBookmarksData.mainBookmarks.unshift(action.payload);
-                state.mainBookmarks = mainBookmarksData.mainBookmarks;
-                setItemLocalStorage(_pathLocalstorage_mainBookmarks, mainBookmarksData);
+            if(bool === true){
+                return;
             }
+            let boolUrl = false;
+            urlsApp.forEach(item => {
+                if(action.payload.url === item){
+                    boolUrl = true;
+                    return;
+                }
+            })
+            if(boolUrl === true){
+                return;
+            }
+
+            mainBookmarksData.mainBookmarks.unshift(action.payload);
+            state.mainBookmarks = mainBookmarksData.mainBookmarks;
+            setItemLocalStorage(_pathLocalstorage_mainBookmarks, mainBookmarksData);
         })
         .addCase(deleteMainBookmark, (state, action) => {
             const mainBookmarksData = getItemLocalStorage(_pathLocalstorage_mainBookmarks);
@@ -53,6 +66,13 @@ const mainBookmarks = createReducer(initialState, builder => {
             const mainBookmarksData = getItemLocalStorage(_pathLocalstorage_mainBookmarks);
             mainBookmarksData.mainBookmarks[action.payload.index] = {url: action.payload.url, name: action.payload.name};
             state.mainBookmarks = mainBookmarksData.mainBookmarks;
+            setItemLocalStorage(_pathLocalstorage_mainBookmarks, mainBookmarksData);
+        })
+        .addCase(reorderMainBookmarks, (state, action) => {
+            console.log('payload:', action.payload);
+            state.mainBookmarks = action.payload;
+            const mainBookmarksData = getItemLocalStorage(_pathLocalstorage_mainBookmarks);
+            mainBookmarksData.mainBookmarks = action.payload;
             setItemLocalStorage(_pathLocalstorage_mainBookmarks, mainBookmarksData);
         })
         .addDefaultCase(() => {});

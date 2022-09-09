@@ -9,7 +9,6 @@
         @include flex($justifyContent: center, $align-items: flex-start, $flexWrap: wrap);
         height: 400px;
         width: 85%;
-        // background-color: rebeccapurple;
         &_item{
             cursor: pointer;
             margin: 10px;
@@ -19,8 +18,6 @@
             width: 200px;
             background-color: rgba($color: #000000, $alpha: .7);
             color: white;
-            transform: scale(1);
-            transition: 0.2s transform;
             &:hover{
                 transform: scale(1.05);
                 .homy_main_bookmarks_list_item_controls{
@@ -30,6 +27,12 @@
             p{
                 position: absolute;
                 bottom: 2px;
+                user-select: none;
+                pointer-events: none;
+            }
+            img{
+                user-select: none;
+                pointer-events: none;
             }
             &_controls{
                 @include flex;
@@ -66,4 +69,8 @@
             }
         }
     }
+}
+
+.row_main_bookmarks{
+    @include flex($justifyContent: center, $align-items: flex-start, $flexDirection: row);
 }

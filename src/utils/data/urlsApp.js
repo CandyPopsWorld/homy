@@ -1,0 +1,1 @@
+export const urlsApp = process.env.REACT_APP_URLS_APP.split(',');

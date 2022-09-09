@@ -8,3 +8,4 @@ export const deleteMainBookmark = createAction('DELETE_MAIN_BOOKMARK');
 export const forceChangeDisplayUpdateMainBookmarkModal = createAction('FORCE_CHANGE_DISPLAY_UPDATE_MAIN_BOOKMARK_MODAL');
 export const writeLocalUpdateBookmark = createAction('WRITE_LOCAL_UPDATE_BOOKMARK');
 export const updateMainBookmark = createAction('UPDATE_MAIN_BOOKMARK');
+export const reorderMainBookmarks = createAction('REORDER_MAIN_BOOKMARKS');
