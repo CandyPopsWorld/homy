@@ -69,7 +69,6 @@ const mainBookmarks = createReducer(initialState, builder => {
             setItemLocalStorage(_pathLocalstorage_mainBookmarks, mainBookmarksData);
         })
         .addCase(reorderMainBookmarks, (state, action) => {
-            console.log('payload:', action.payload);
             state.mainBookmarks = action.payload;
             const mainBookmarksData = getItemLocalStorage(_pathLocalstorage_mainBookmarks);
             mainBookmarksData.mainBookmarks = action.payload;

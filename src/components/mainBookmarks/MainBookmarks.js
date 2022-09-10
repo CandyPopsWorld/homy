@@ -15,28 +15,63 @@ function MainBookmarks(props) {
     const mainBookmarks = useSelector(state => state.mainBookmarks.mainBookmarks);
     const [localBookmarks, setLocalBookmarks] = useState([]);
 
-    // const RowBookmarks = ({children}) =>{
-    //     return (
-    //         <Reorder.Group 
-    //         as='div' 
-    //         axis='x' 
-    //         values={localBookmarks ? localBookmarks : [{}]}
-    //         onReorder={onReorderBookmarks}  className="row_main_bookmarks">
-    //             {children}
-    //         </Reorder.Group>
-    //     );
+    const RowBookmarks = ({children}) =>{
+        return (
+            <Reorder.Group 
+            as='div' 
+            axis='x' 
+            values={localBookmarks.length > 0 ? localBookmarks : [{}]}
+            onReorder={onReorderBookmarks}  className="row_main_bookmarks">
+                {children}
+            </Reorder.Group>
+        );
+    };
+
+    let elements_row_bookmarks = [];
+    let countRow = localBookmarks.length > 0 ? Math.ceil(localBookmarks.length / 6) : 0;
+    if(localBookmarks.length > 0){
+        for(let i = 0; i < countRow; i++){
+            elements_row_bookmarks.push(
+                <RowBookmarks key={i}>
+                    {
+                        // eslint-disable-next-line
+                        localBookmarks.map((item, j) => {
+                            if(i === 0 && (j < 6)){
+                                return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                            }
+                            if(i === 1 && (j > 5 && j < 12)){
+                                return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                            }
+                            if(i === 2 && (j > 11 && j < 18)){
+                                return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                            }
+                        })
+
+                    }
+                </RowBookmarks>
+            )
+        }
+    }
+
+    // let elements_main_bookmarks = null;
+    // if(localBookmarks.length > 0){
+    //     elements_main_bookmarks = localBookmarks.map((item, i) => {
+    //         return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={i} item={item}/>
+    //     })
     // };
 
-    let elements_main_bookmarks = null;
-    if(localBookmarks.length > 0){
-        elements_main_bookmarks = localBookmarks.map((item, i) => {
-            return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={i} item={item}/>
-        })
+    const onReorderBookmarks = async (arr) => {
+        let firstArrElem = await arr[0];
+        let index =  await localBookmarks.findIndex(item => item.uid === firstArrElem.uid);
+        if(index < 6){
+            await setLocalBookmarks(prev => [...arr, ...prev.slice(6)]);
+        } else if(index >= 6 && index <= 11){
+            await setLocalBookmarks(prev => [...prev.slice(0, 6), ...arr, ...prev.slice(12)]);
+        } else if(index >= 12 && index <= 17){
+            await setLocalBookmarks(prev => [...prev.slice(0, 6), ...prev.slice(6, 12), ...arr]);
+        }
     };
 
-    const onReorderBookmarks = async (arr) => {
-        await setLocalBookmarks(arr);
-    };
 
     const initializationLocalBookmarks = async () => {
         await setLocalBookmarks(mainBookmarks);
@@ -55,18 +90,10 @@ function MainBookmarks(props) {
     }, [localBookmarks])
 
     return (
-        <Reorder.Group 
-        as='div' 
-        axis='x' 
-        values={localBookmarks ? localBookmarks : [{}]}
-        onReorder={onReorderBookmarks}  className='homy_main_bookmarks'>
-            <Reorder.Group 
-            as='div' 
-            axis='x' 
-            values={localBookmarks ? localBookmarks : [{}]}
-            onReorder={onReorderBookmarks} 
-            className="homy_main_bookmarks_list">
-                {elements_main_bookmarks}
+        <div className='homy_main_bookmarks'>
+            <div className="homy_main_bookmarks_list">
+                {/* {elements_main_bookmarks} */}
+                {elements_row_bookmarks}
                 {
                     mainBookmarks.length < 18 ? <MainBookmarksCreateItem/> : null
                 }
@@ -76,8 +103,8 @@ function MainBookmarks(props) {
                 {
                     displayUpdateModalMainBookmarks ? <ModalUpdateMainBookmark/> : null
                 }
-            </Reorder.Group>
-        </Reorder.Group>
+            </div>
+        </div>
     );
 }
 

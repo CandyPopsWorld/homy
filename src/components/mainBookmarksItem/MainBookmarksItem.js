@@ -25,15 +25,12 @@ function MainBookmarksItem({url, name, index, item}) {
         await dispatch(forceChangeDisplayUpdateMainBookmarkModal(true));
     };
 
-    console.log(style);
-
-
     return (
         <Reorder.Item
         value={item} 
         as="div"
         whileDrag={{
-            scale: 1.05
+            scale: 1.1
         }}
         onClick={onTransitionMainBookmarks}
         onDragStart={() => {
