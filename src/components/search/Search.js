@@ -17,6 +17,12 @@ function Search(props) {
     const searchProviders = useSelector(state => state.settings.settings.searchProviders);
     const searchTerm = useSelector(state => state.search.searchTerm);
 
+    const {searchInputColor, searchInputBorderColor} = useSelector(state => {
+        if(state.homySettings.homySettings){
+            return state.homySettings.homySettings.colors;
+        }
+    });
+
     //eslint-disable-next-line
     const [searchTermg, setSearchTerm] = useState('');
 
@@ -87,7 +93,8 @@ function Search(props) {
     return (
         <div className="homy_search_block">
             <input 
-            className="homy_search_block_input" 
+            className="homy_search_block_input"
+            style={{color: searchInputColor, borderColor: searchInputBorderColor}} 
             type="text" 
             placeholder='Введите запрос...'
             value={searchTerm}

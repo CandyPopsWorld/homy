@@ -1,3 +1,4 @@
+@import '../../style/mixin.scss';
 .homy_settings{
     position: absolute;
     bottom: 10px;
@@ -10,7 +11,7 @@
         color: gray;
         cursor: pointer;
         &:hover{
-            background-color: rgba($color: #000000, $alpha: .8);
+            background-color: rgba($color: #000000, $alpha: .8)!important;
         }
     }
 
@@ -22,5 +23,58 @@
         height: 500px;
         background-color: rgba($color: #000000, $alpha: 1);
         border-radius: 17px;
+        color: white;
+        h3{
+            text-align: center;
+        }
+        &_view{
+            &_wrapper{
+                width: 90%;
+                @include flex($justifyContent: space-around);
+                &_thumbnail{
+                    width: 120px;
+                    height: 60px;
+                    img{
+                        width: inherit;
+                        height: inherit;
+                    }
+                }
+                &_form{
+                    &_item{
+                        label{
+                            cursor: pointer;
+                            &:hover{
+                                color: gray;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &_link{
+                color: aqua;
+                text-align: center;
+                cursor: pointer;
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+        }
+        &_all_settings{
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            &_link{
+                color: aqua;
+                text-align: center;
+                cursor: pointer;
+                font-size: 1.1em;
+                font-weight: 600;
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+        }
     }
 }

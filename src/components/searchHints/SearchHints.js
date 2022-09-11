@@ -9,6 +9,11 @@ function SearchHints({searchRef}) {
     const dispatch = useDispatch();
     const displaySearchHints = useSelector(state => state.requests.displaySearchHints);
     const recentRequests = useSelector(state => state.requests.recentRequests);
+    const {searchHintsModalBg} = useSelector(state => {
+        if(state.homySettings.homySettings){
+            return state.homySettings.homySettings.colors;
+        }
+    });
 
     useEffect(() => {
         if(localStorage.getItem(_pathLocalstorage_allRequests) && localStorage.getItem(_pathLocalstorage_recentRequests)){
@@ -22,7 +27,7 @@ function SearchHints({searchRef}) {
     });
 
     return (
-        <div className='homy_search_hints' style={displaySearchHints && recentRequests.length > 0 ? {display: 'block'} : {display: 'none'}}>
+        <div className='homy_search_hints' style={displaySearchHints && recentRequests.length > 0 ? {display: 'block', backgroundColor: searchHintsModalBg} : {display: 'none', backgroundColor: searchHintsModalBg}}>
             {elements_hints}
         </div>
     );

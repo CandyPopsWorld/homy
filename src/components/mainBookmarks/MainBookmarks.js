@@ -13,6 +13,13 @@ function MainBookmarks(props) {
     const displayCreateModalMainBookmarks = useSelector(state => state.mainBookmarks.displayCreateModalMainBookmarks);
     const displayUpdateModalMainBookmarks = useSelector(state => state.mainBookmarks.displayUpdateModalMainBookmarks);
     const mainBookmarks = useSelector(state => state.mainBookmarks.mainBookmarks);
+
+    const maxCountMainBookmarks = useSelector(state => {
+        if(state.homySettings.homySettings){
+            return state.homySettings.homySettings.view.maxCountMainBookmarks
+        }
+    });
+
     const [localBookmarks, setLocalBookmarks] = useState([]);
 
     const RowBookmarks = ({children}) =>{
@@ -36,14 +43,16 @@ function MainBookmarks(props) {
                     {
                         // eslint-disable-next-line
                         localBookmarks.map((item, j) => {
-                            if(i === 0 && (j < 6)){
-                                return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
-                            }
-                            if(i === 1 && (j > 5 && j < 12)){
-                                return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
-                            }
-                            if(i === 2 && (j > 11 && j < 18)){
-                                return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                            if(j < maxCountMainBookmarks){
+                                if(i === 0 && (j < 6)){
+                                    return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                                }
+                                if(i === 1 && (j > 5 && j < 12)){
+                                    return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                                }
+                                if(i === 2 && (j > 11 && j < 18)){
+                                    return <MainBookmarksItem key={item.uid} url={item.url} name={item.name} index={j} item={item}/>;
+                                }
                             }
                         })
 
@@ -95,7 +104,7 @@ function MainBookmarks(props) {
                 {/* {elements_main_bookmarks} */}
                 {elements_row_bookmarks}
                 {
-                    mainBookmarks.length < 18 ? <MainBookmarksCreateItem/> : null
+                    mainBookmarks.length < maxCountMainBookmarks ? <MainBookmarksCreateItem/> : null
                 }
                 {
                     displayCreateModalMainBookmarks ? <ModalCreateMainBookmark/> : null

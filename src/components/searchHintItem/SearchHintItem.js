@@ -1,11 +1,17 @@
-import { useDispatch } from 'react-redux';
-import recentIconSprite from '../../resources/image/icons/recent.png';
+import { useDispatch, useSelector } from 'react-redux';
 import { changeSearchTerm } from '../../redux/actions/search';
 import { deleteRecentRequestItem, forceChangeDisplaySearchHints } from '../../redux/actions/requests';
+import { useState } from 'react';
 
 function SearchHintItem({providers, term, fullTerm, providersNames, searchRef, uid}) {
 
     const dispatch = useDispatch();
+    const {searchHintsModalBg,searchHintsIconsColor,searchHintsItemHoverColor, searchHintsIconsTextColor, searchHintsItemProvidersColor, searchHintsItemTermColor} = useSelector(state => {
+        if(state.homySettings.homySettings){
+            return state.homySettings.homySettings.colors;
+        }
+    });
+    const [style, setStyle] = useState({'backgroundColor': searchHintsModalBg});
 
     let strProvidersNames = '';
     providersNames.forEach(item => {
@@ -31,19 +37,22 @@ function SearchHintItem({providers, term, fullTerm, providersNames, searchRef, u
     };
 
     return (
-        <div className="homy_search_hints_item" onClick={clickByElementHint}>
+        <div className="homy_search_hints_item" onClick={clickByElementHint} 
+        style={style}
+        onMouseEnter={() => setStyle({backgroundColor: searchHintsItemHoverColor})}
+        onMouseLeave={() => setStyle({backgroundColor: searchHintsModalBg})}>
             <div className="homy_search_hints_item_recent_icon">
-                <img src={recentIconSprite} alt="" />
+                <i className="fa-sharp fa-solid fa-arrow-rotate-right" style={{color: searchHintsIconsColor}}></i>
             </div>
-            <div className="homy_search_hints_item_providers_code">
+            <div className="homy_search_hints_item_providers_code" style={{color: searchHintsItemProvidersColor}}>
                 {strProvidersNames.length < 15 ? strProvidersNames : strProvidersNames.substr(0, 15) + '...'}
                 {providers.length < 15 ? `(${providers})` : '(' + providers.substr(0,15) + '...)'}
             </div>
-            <div className="homy_search_hints_item_term">
+            <div className="homy_search_hints_item_term" style={{color: searchHintsItemTermColor}}>
                 {term.length < 40 ? term : term.substr(0,40) + '...'}
             </div>
-            <div className="homy_search_hints_item_delete" onClick={deleteSearchHintItem}>
-                <span>х</span>
+            <div className="homy_search_hints_item_delete" onClick={deleteSearchHintItem} style={{backgroundColor: searchHintsIconsColor}}>
+                <span style={{color: searchHintsIconsTextColor}}>х</span>
             </div>
         </div>
     );

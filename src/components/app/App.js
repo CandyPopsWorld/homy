@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Header from '../header/Header';
 import './App.scss';
-import { localstorage, homyAllRequests, homyReacentRequests, _pathLocalstorage_homy, _pathLocalstorage_allRequests, _pathLocalstorage_recentRequests, _pathLocalstorage_mainBookmarks, homyMainBookmarks } from '../../utils/data/localstorage';
+import { localstorage, homyAllRequests, homyReacentRequests, _pathLocalstorage_homy, _pathLocalstorage_allRequests, _pathLocalstorage_recentRequests, _pathLocalstorage_mainBookmarks, homyMainBookmarks, _pathLocalstorage_homySettings } from '../../utils/data/localstorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { localstorageFetched, changeDisplaySettingsModal } from '../../redux/actions/settings';
 import Settings from '../settings/Settings';
@@ -9,6 +9,8 @@ import { forceChangeDisplaySearchHints } from '../../redux/actions/requests';
 import { _homyModalMainBookmarksCREATE_ClassName, _homyModalMainBookmarksNAME_ClassName, _homyModalMainBookmarksURL_ClassName, _homyModalMainBookmarks_ClassName, _homySearchBlockInput_ClassName, _homySearchHintsItem_ClassName, _homySearchHints_ClassName, _homySettingsModal_ClassName } from '../../utils/data/classes';
 import MainBookmarks from '../mainBookmarks/MainBookmarks';
 import { forceChangeDisplayMainBookmarksModal, forceChangeDisplayUpdateMainBookmarkModal, mainBookmarksFetched } from '../../redux/actions/mainBookmarks';
+import { homySettings } from '../../utils/data/settings';
+import { homySettingsFetched } from '../../redux/actions/homySettings';
 
 function App(props) {
 
@@ -17,6 +19,11 @@ function App(props) {
     const displaySearchHints = useSelector(state => state.requests.displaySearchHints);
     const displayCreateModalMainBookmarks = useSelector(state => state.mainBookmarks.displayCreateModalMainBookmarks);
     const displayUpdateModalMainBookmarks = useSelector(state => state.mainBookmarks.displayUpdateModalMainBookmarks);
+    const mainBg = useSelector(state => {
+        if(state.homySettings.homySettings){
+            return state.homySettings.homySettings.colors.mainBg; 
+        }
+    });
 
     const getLocalStorage = async () => {
         if(!localStorage.getItem(_pathLocalstorage_homy)){
@@ -32,10 +39,14 @@ function App(props) {
         if(!localStorage.getItem(_pathLocalstorage_mainBookmarks)){
             await localStorage.setItem(_pathLocalstorage_mainBookmarks, JSON.stringify(homyMainBookmarks));
         }
+        if(!localStorage.getItem(_pathLocalstorage_homySettings)){
+            await localStorage.setItem(_pathLocalstorage_homySettings, JSON.stringify(homySettings));
+        }
     };
 
     const initializationLocalStorage = async () => {
         await getLocalStorage();
+        await dispatch(homySettingsFetched(JSON.parse(localStorage.getItem(_pathLocalstorage_homySettings))));
         await dispatch(localstorageFetched(JSON.parse(localStorage.getItem(_pathLocalstorage_homy))));
         await dispatch(mainBookmarksFetched());
     };
@@ -46,8 +57,11 @@ function App(props) {
     }, [])
 
     return (
-        <div className='homy' onClick={(e) => {
-            if(!e.target.classList.contains(_homySettingsModal_ClassName) && displayModal){
+        <div className='homy' style={mainBg ? {backgroundColor: mainBg} : {}} onClick={(e) => {
+            if((!e.target.classList.value.includes(_homySettingsModal_ClassName)) && displayModal){
+                dispatch(changeDisplaySettingsModal());
+            }
+            if((e.target.classList.value.includes('homy_settings_btn')) && displayModal){
                 dispatch(changeDisplaySettingsModal());
             }
             if(!e.target.classList.contains(_homySearchBlockInput_ClassName, _homySearchHints_ClassName, _homySearchHintsItem_ClassName) && displaySearchHints){

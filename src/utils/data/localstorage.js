@@ -24,3 +24,4 @@ export const _pathLocalstorage_homy = process.env.REACT_APP_HOMY_LOCALSTORAGE;
 export const _pathLocalstorage_allRequests = process.env.REACT_APP_HOMY_ALL_REQUESTS_LOCALSTORAGE;
 export const _pathLocalstorage_recentRequests = process.env.REACT_APP_HOMY_RECENT_REQUESTS_LOCALSTORAGE;
 export const _pathLocalstorage_mainBookmarks = process.env.REACT_APP_HOMY_MAIN_BOOKMARKS;
+export const _pathLocalstorage_homySettings = process.env.REACT_APP_HOMY_SETTINGS;
