@@ -1,0 +1,64 @@
+@import '../../style/mixin.scss';
+
+.homy_settings_wrapper{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 200;
+    background-color: #00111c;
+    &_back{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        p{
+            color: aqua;
+            text-align: center;
+            cursor: pointer;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &_nav{
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        @include flex;
+        &_item{
+            margin: 10px;
+            button{
+                cursor: pointer;
+                background-color: transparent;
+                border: none;
+                color: rebeccapurple;
+            }
+            &.active{
+                button{
+                    color: white;
+                }
+            }
+        }
+        &_block{
+            background-color: #00112f;
+            position: absolute;
+            top: 450px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 80vh;
+            width: 80vw;
+            &_item{
+                background-color: transparent;
+                height: inherit;
+                width: inherit;
+                color: white;
+                &_header{
+                    text-align: center;
+                }
+            }
+        }
+    }
+}

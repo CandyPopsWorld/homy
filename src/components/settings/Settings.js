@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeViewMode } from '../../redux/actions/homySettings';
+import { changeViewMode, forceChangeDisplaySettingsWrapper } from '../../redux/actions/homySettings';
 import { changeDisplaySettingsModal } from '../../redux/actions/settings';
+import SettingsWrapper from '../settingsWrapper/SettingsWrapper';
 import './Settings.scss';
 function Settings(props) {
 
@@ -16,6 +17,8 @@ function Settings(props) {
     const [style, setStyle] = useState({'backgroundColor': settingsBtnBg, 'color': settingsBtnColor});
 
     return (
+        <>        
+        <SettingsWrapper/>
         <div className='homy_settings'>
             <button 
             className='homy_settings_btn'
@@ -25,6 +28,7 @@ function Settings(props) {
             onMouseLeave={() => setStyle({'backgroundColor': settingsBtnBg, 'color': settingsBtnColor})}>Все настройки</button>
             <SettingsModal/>
         </div>
+        </>
     );
 };
 
@@ -85,7 +89,11 @@ const SettingsModal = () => {
                 </div>
             </div>
             <div className="homy_settings_modal_all_settings">
-                <p className="homy_settings_modal_all_settings_link">Все настройки</p>
+                <p className="homy_settings_modal_all_settings_link"
+                onClick={() => {
+                    dispatch(changeDisplaySettingsModal());
+                    dispatch(forceChangeDisplaySettingsWrapper(true));
+                }}>Все настройки</p>
             </div>
         </div>
     )
