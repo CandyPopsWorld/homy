@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './Search.scss';
 import { changeDisplaySearchHints, writeRequest } from '../../redux/actions/requests';
-import { changeSearchTerm, clearSearchTerm } from '../../redux/actions/search';
+import { changeSearchTerm, clearSearchTerm, getSearchRef } from '../../redux/actions/search';
 import { validateTerm } from '../../utils/functions/validateTerm';
 import SearchHints from '../searchHints/SearchHints';
 import { transformNumber } from '../../utils/functions/transformNumber';
@@ -85,6 +85,7 @@ function Search(props) {
 
     useEffect(() => {
         if(searchRef){
+            dispatch(getSearchRef(searchRef));
             // searchRef.current.focus();
         }
         // eslint-disable-next-line
