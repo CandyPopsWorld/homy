@@ -84,9 +84,9 @@ const SettingsModal = () => {
                         <img className='homy_settings_modal_thumb' src={viewThumbnail ? require(`../../resources/image/view/${viewThumbnail}.PNG`) : ''} alt="view" />
                     </div>
                 </div>
-                <div className="homy_settings_modal_view_link">
+                {/* <div className="homy_settings_modal_view_link">
                     <p className='homy_settings_modal_view_link_text'>Все настройки интерфейса</p>
-                </div>
+                </div> */}
             </div>
             <div className="homy_settings_modal_all_settings">
                 <p className="homy_settings_modal_all_settings_link"
