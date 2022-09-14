@@ -7,6 +7,7 @@ import { validateTerm } from '../../utils/functions/validateTerm';
 import SearchHints from '../searchHints/SearchHints';
 import { transformNumber } from '../../utils/functions/transformNumber';
 import { uid } from 'uid';
+import moment from 'moment/moment';
 function Search(props) {
 
     const dispatch = useDispatch();
@@ -55,12 +56,13 @@ function Search(props) {
             fullTerm: arr[0].fullTerm,
             providersNames: providersNames,
             time: {
-                year: transformNumber(new Date().getFullYear()),
-                month: transformNumber(new Date().getMonth()),
-                day: transformNumber(new Date().getDay()),
-                hour: transformNumber(new Date().getHours()),
-                minutes: transformNumber(new Date().getMinutes()),
-                seconds: transformNumber(new Date().getSeconds())
+                year: transformNumber(moment().year()),
+                month: transformNumber(Number(moment().month() + 1)),
+                day: transformNumber(moment().date()),
+                hour: transformNumber(moment().hours()),
+                minutes: transformNumber(moment().minutes()),
+                seconds: transformNumber(moment().seconds()),
+                week: transformNumber(moment().week())
             },
             uid: uid(1000)
         };

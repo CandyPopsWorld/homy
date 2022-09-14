@@ -3,9 +3,11 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forceChangeDisplaySettingsWrapper } from '../../redux/actions/homySettings';
-import { deleteAllRequestItem, getAllRequestsWithOffset } from '../../redux/actions/requests';
+import { clearHistoryWithDate, countHistoryRequestsWithDate, deleteAllRequestItem, getAllRequestsWithOffset } from '../../redux/actions/requests';
 import { changeSearchTerm } from '../../redux/actions/search';
 import './SettingsWrapper.scss';
+import moment from 'moment';
+import {transformNumber} from '../../utils/functions/transformNumber';
 function SettingsWrapper(props) {
 
     const dispatch = useDispatch();
@@ -69,6 +71,8 @@ const HistoryNavBlock = () => {
     const dispatch = useDispatch();
     const allRequests = useSelector(state => state.requests.allRequests);
     const searchRef = useSelector(state => state.search.searchRef);
+    const countRequestsWithDate = useSelector(state => state.requests.countRequestsWithDate);
+    const loadingCountRequestsWithDate = useSelector(state => state.requests.loadingCountRequestsWithDate);
 
     const [displayClearHistoryModal, setDisplayClearHistoryModal] = useState(false);
 
@@ -104,12 +108,42 @@ const HistoryNavBlock = () => {
         }
     };
 
+    const changeSelectOptionClearHistory = (e) => {
+        const value = e.target.value;
+        getCountAllRequests(value);
+    };
+
+    const getCountAllRequests = async (value = 'lastHour') => {
+        const currentDate = {
+            year: transformNumber(moment().year()),
+            month: transformNumber(Number(moment().month() + 1)),
+            day: transformNumber(moment().date()),
+            hour: transformNumber(moment().hours()),
+            minutes: transformNumber(moment().minutes()),
+            seconds: transformNumber(moment().seconds()),
+            week: transformNumber(moment().week())
+        };
+        dispatch(countHistoryRequestsWithDate({currentDate, value}));
+    };
+
+    const onClearHistory = async () => {
+        await dispatch(clearHistoryWithDate());
+        await setDisplayClearHistoryModal(false);
+    };
+
     useEffect(() => {
         if(allRequests.length === 0){
             getHistory();
         }
         // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        if(displayClearHistoryModal){
+            getCountAllRequests();
+        }
+        //eslint-disable-next-line
+    }, [displayClearHistoryModal])
 
     let elements_requests = allRequests.map(({term, uid, time, providersNames, fullTerm}) => {
         let providersNamesStr = providersNames.join(',');
@@ -153,16 +187,16 @@ const HistoryNavBlock = () => {
                 <div className="homy_settings_wrapper_nav_block_item_clear_history_modal_wrapper">
                     <div className="homy_settings_wrapper_nav_block_item_clear_history_modal_wrapper_header">
                         <h4>Очистка истории</h4>
-                        <select name="" id="">
+                        <select name="" id="" onChange={changeSelectOptionClearHistory}>
                             {elements_options}
                         </select>
 
                         <div className="homy_settings_wrapper_nav_block_item_clear_history_modal_wrapper_count_requests">
-                            ... Записей
+                            {loadingCountRequestsWithDate === 'idle' ? countRequestsWithDate : '(Вычисление...)'} Записей
                         </div>
                         <div className="homy_settings_wrapper_nav_block_item_clear_history_modal_wrapper_controls">
                             <div className="homy_settings_wrapper_nav_block_item_clear_history_modal_wrapper_controls_item">
-                                <button className='clear_history_btn'>Очистить</button>
+                                <button className='clear_history_btn' onClick={onClearHistory}>Очистить</button>
                             </div>
                             <div className="homy_settings_wrapper_nav_block_item_clear_history_modal_wrapper_controls_item">
                                 <button className='back_history_modal' onClick={() => setDisplayClearHistoryModal(false)}>Отмена</button>

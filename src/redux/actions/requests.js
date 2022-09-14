@@ -7,3 +7,5 @@ export const getRecentRequests = createAction('GET_RECENT_REQUESTS');
 export const deleteRecentRequestItem = createAction('DELETE_RECENT_REQUEST_ITEM');
 export const getAllRequestsWithOffset = createAction('GET_ALL_REQUESTS_WITH_OFFSET');
 export const deleteAllRequestItem = createAction('DELETE_ALL_REQUEST_ITEM');
+export const clearHistoryWithDate = createAction('CLEAR_HISTORY_WITH_DATE');
+export const countHistoryRequestsWithDate = createAction('COUNT_HISTORY_REQUESTS_WITH_DATE');

@@ -8,7 +8,7 @@ import { stringMiddleware } from "../middlewares";
 
 const store = configureStore({
     reducer: {search, settings, requests, mainBookmarks, homySettings},
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}).concat(stringMiddleware),
     devTools: process.env.NODE_ENV !== 'production'
 });
 
