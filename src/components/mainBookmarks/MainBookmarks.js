@@ -19,6 +19,11 @@ function MainBookmarks(props) {
             return state.homySettings.homySettings.view.maxCountMainBookmarks
         }
     });
+    const showMainBookmarks = useSelector(state => {
+        if (state.homySettings.homySettings){
+            return state.homySettings.homySettings.settings.interface.showMainBookmarks;
+        }
+    });
 
     const [localBookmarks, setLocalBookmarks] = useState([]);
 
@@ -99,7 +104,7 @@ function MainBookmarks(props) {
     }, [localBookmarks])
 
     return (
-        <div className='homy_main_bookmarks'>
+        <div className='homy_main_bookmarks' style={showMainBookmarks ? {display: 'flex'} : {display: 'none'}}>
             <div className="homy_main_bookmarks_list">
                 {/* {elements_main_bookmarks} */}
                 {elements_row_bookmarks}

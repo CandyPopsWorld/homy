@@ -14,6 +14,11 @@ function SearchHints({searchRef}) {
             return state.homySettings.homySettings.colors;
         }
     });
+    const showRecentRequests = useSelector(state => {
+        if (state.homySettings.homySettings){
+            return state.homySettings.homySettings.settings.general.showRecentRequests;
+        }
+    });
 
     useEffect(() => {
         if(localStorage.getItem(_pathLocalstorage_allRequests) && localStorage.getItem(_pathLocalstorage_recentRequests)){
@@ -27,7 +32,7 @@ function SearchHints({searchRef}) {
     });
 
     return (
-        <div className='homy_search_hints' style={displaySearchHints && recentRequests.length > 0 ? {display: 'block', backgroundColor: searchHintsModalBg} : {display: 'none', backgroundColor: searchHintsModalBg}}>
+        <div className='homy_search_hints' style={displaySearchHints && recentRequests.length > 0 && showRecentRequests ? {display: 'block', backgroundColor: searchHintsModalBg} : {display: 'none', backgroundColor: searchHintsModalBg}}>
             {elements_hints}
         </div>
     );

@@ -13,6 +13,11 @@ function Settings(props) {
             return state.homySettings.homySettings.colors;
         }
     });
+    const showBtnAllSettings = useSelector(state => {
+        if (state.homySettings.homySettings){
+            return state.homySettings.homySettings.settings.interface.showBtnAllSettings;
+        }
+    });
 
     const [style, setStyle] = useState({'backgroundColor': settingsBtnBg, 'color': settingsBtnColor});
 
@@ -23,7 +28,7 @@ function Settings(props) {
             <button 
             className='homy_settings_btn'
             onClick={() => dispatch(changeDisplaySettingsModal())}
-            style={style}
+            style={showBtnAllSettings ? style : {display: 'none'}}
             onMouseEnter={() => setStyle({'backgroundColor': settingsBtnHoverBg, 'color': settingsBtnColor})}
             onMouseLeave={() => setStyle({'backgroundColor': settingsBtnBg, 'color': settingsBtnColor})}>Все настройки</button>
             <SettingsModal/>

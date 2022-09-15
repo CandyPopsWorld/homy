@@ -10,7 +10,8 @@ import { _homyModalMainBookmarksCREATE_ClassName, _homyModalMainBookmarksNAME_Cl
 import MainBookmarks from '../mainBookmarks/MainBookmarks';
 import { forceChangeDisplayMainBookmarksModal, forceChangeDisplayUpdateMainBookmarkModal, mainBookmarksFetched } from '../../redux/actions/mainBookmarks';
 import { homySettings } from '../../utils/data/settings';
-import { homySettingsFetched } from '../../redux/actions/homySettings';
+import { homySettingsFetched, shortcutsChangeSettings } from '../../redux/actions/homySettings';
+import { keyboardShortcuts } from '../../utils/data/keyboardShortcuts';
 
 function App(props) {
 
@@ -51,6 +52,15 @@ function App(props) {
         await dispatch(mainBookmarksFetched());
     };
 
+    const onKeyPress = (e) => {
+        const keyCode = e.keyCode;
+        keyboardShortcuts.forEach(item => {
+            if(item.keyCode === keyCode){
+                dispatch(shortcutsChangeSettings(keyCode));
+            }
+        })
+    };
+
     useEffect(() => {
         initializationLocalStorage();
         // eslint-disable-next-line
@@ -74,7 +84,7 @@ function App(props) {
             } else if(displayUpdateModalMainBookmarks){
                 dispatch(forceChangeDisplayUpdateMainBookmarkModal(false));
             }
-        }}>
+        }} onKeyDown={onKeyPress} tabIndex={0}>
             <Header/>
             <MainBookmarks/>
             <Settings/>

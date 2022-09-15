@@ -8,6 +8,7 @@ import SearchHints from '../searchHints/SearchHints';
 import { transformNumber } from '../../utils/functions/transformNumber';
 import { uid } from 'uid';
 import moment from 'moment/moment';
+import { getSearchRefSettings } from '../../redux/actions/homySettings';
 function Search(props) {
 
     const dispatch = useDispatch();
@@ -17,6 +18,11 @@ function Search(props) {
     const _baseUrl = useSelector(state => state.settings.settings.baseUrl);
     const searchProviders = useSelector(state => state.settings.settings.searchProviders);
     const searchTerm = useSelector(state => state.search.searchTerm);
+    const autoFocusSearch = useSelector(state => {
+        if (state.homySettings.homySettings){
+            return state.homySettings.homySettings.settings.general.autoFocusSearch;
+        }
+    });
 
     const {searchInputColor, searchInputBorderColor} = useSelector(state => {
         if(state.homySettings.homySettings){
@@ -88,10 +94,16 @@ function Search(props) {
     useEffect(() => {
         if(searchRef){
             dispatch(getSearchRef(searchRef));
-            // searchRef.current.focus();
+            dispatch(getSearchRefSettings(searchRef));
         }
         // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        if(autoFocusSearch === true){
+            searchRef.current.focus();
+        }
+    }, [searchRef, autoFocusSearch])
 
     return (
         <div className="homy_search_block">

@@ -21,6 +21,17 @@ export const homySettings = {
         settingsBtnBg: 'rgba(0, 0, 0, .5)',
         settingsBtnHoverBg: 'rgba(0, 0, 0, .8)',
         settingsBtnColor: 'gray',
+    },
+    settings: {
+        general: {
+            showRecentRequests: true,
+            autoFocusSearch: true
+        },
+        interface: {
+            showBtnAllSettings: true,
+            showMainBookmarks: true,
+            activeScheme: 'darkTheme'
+        }
     }
 };
 
