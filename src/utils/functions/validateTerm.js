@@ -1,6 +1,5 @@
 import CryptoJS from "crypto-js";
 export const validateTerm = (term, searchProviders) => {
-    console.log(searchProviders);
     if(term.includes('~[') && term.includes(']~')){
         let localTerm = term.split(']~').pop();
         const array = [];

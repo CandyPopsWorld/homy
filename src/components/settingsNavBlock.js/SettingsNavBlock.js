@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { uid } from 'uid';
 import { changeActiveTheme, changeGeneralAndInterfaceSettings } from '../../redux/actions/homySettings';
+import { addUserProvider } from '../../redux/actions/settings';
 import { colorsThemesSchemes, mainThemeSchemes } from '../../utils/data/themes';
+import { encryprData } from '../../utils/functions/encryprData';
 
 const SettingsNavBlock = () => {
 
@@ -18,13 +21,25 @@ const SettingsNavBlock = () => {
         }
     });
 
+    const searchProviders = useSelector(state => {
+        if(state.settings.settings){
+            return state.settings.settings.searchProviders;
+        }
+    });
+
     const [displayThemeModal, setDisplayThemeModal] = useState(false);
+
+    const [displayDefaultListProviders, setDisplayDefaultListProviders] = useState(false);
+    const [displayUsersListProviders, setDisplayUsersListProviders] = useState(false);
 
     const settingsNav = [
         {title: 'Общие настройки', id: 1, href: '#general_settings'},
         {title: 'Интерфейс', id: 2,  href: '#interface_settings'},
         {title: 'Провайдеры', id: 3,  href: '#providers_settings'},
     ];
+
+    const [addedProviders, setAddedProviders] = useState([]);
+
 
     //eslint-disable-next-line
     let elements_nav = settingsNav.map(item => {
@@ -61,15 +76,71 @@ const SettingsNavBlock = () => {
         )
     });
 
+    let elements_default_providers = null;
+    if(searchProviders){
+        //eslint-disable-next-line
+        elements_default_providers = searchProviders.map(item => {
+            if(item.role === 'default'){
+                return (
+                    <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item">
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_code">
+                            <label htmlFor="">Code:</label>
+                            <input type="text" value={item.code} disabled/>
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
+                            <label htmlFor="">ProviderName:</label>
+                            <input type="text" value={item.providerName} disabled/>
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_url">
+                            <label htmlFor="">ProviderUrl:</label>
+                            <input type="text" value={item.provider} disabled/>
+                        </div>
+                    </div>
+                )
+            }
+        })
+    };
+
+    let elements_users_providers = null;
+    if(searchProviders){
+        //eslint-disable-next-line
+        elements_users_providers = searchProviders.map(item => {
+            if(item.role === 'users'){
+                return (
+                    <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item">
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_code">
+                            <label htmlFor="">Code:</label>
+                            <input type="text" value={item.code}/>
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
+                            <label htmlFor="">ProviderName:</label>
+                            <input type="text" value={item.providerName}/>
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
+                            <label htmlFor="">ProviderUrl:</label>
+                            <input type="text" value={item.provider}/>
+                        </div>
+                    </div>
+                )
+            }
+        })
+    };
+
+    let elements_added_providers = null;
+    if(addedProviders.length > 0){
+        elements_added_providers = addedProviders.map(({uid}) => {
+            return  <AddedProviderItem key={uid} addedProviders={addedProviders} setAddedProviders={setAddedProviders} uid={uid}/>
+        })
+    }
+
+    console.log(elements_users_providers);
+
     return (
         <div className="homy_settings_wrapper_nav_block_item">
             <div className="homy_settings_wrapper_nav_block_item_header">
                 <h2>Настройки</h2>
             </div>
             <div className="homy_settings_wrapper_nav_block_item_settings_wrapper">
-                {/* <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_nav_block">
-                    {elements_nav}
-                </div> */}
                 <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block">
                     <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_general">
                         <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_header">
@@ -144,13 +215,68 @@ const SettingsNavBlock = () => {
                         <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_description">
                             <p>Задайте переменные провайдеров для вашего удобного поиска.</p>
                         </div>
-                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_providers_list">
-                            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_providers_list_item">
-
-                            </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_link" onClick={(e) => setDisplayDefaultListProviders(prev => !prev)}>
+                            Стандартные провайдеры
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list" style={displayDefaultListProviders ? {display: 'flex'} : {display: 'none'}}>
+                            {elements_default_providers}
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_link" onClick={(e) => setDisplayUsersListProviders(prev => !prev)}>
+                            Собственные провайдеры
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list" style={displayUsersListProviders ? {display: 'flex'} : {display: 'none'}}>
+                            {elements_users_providers}
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list">
+                            {elements_added_providers}
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_add">
+                            <button onClick={() => setAddedProviders(prev => [...prev, {uid: uid(100)}])}>Добавить провайдера</button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    )
+};
+
+const AddedProviderItem = ({addedProviders, setAddedProviders, uid}) => {
+
+    const dispatch = useDispatch();
+    const [code, setCode] = useState('');
+    const [providerName, setProviderName] = useState('');
+    const [provider, setProvider] = useState('');
+    const index = addedProviders.findIndex(item => item.uid === uid);
+
+    const addNewProviderUser = async () => {
+        await dispatch(addUserProvider({code: encryprData(code), provider: encryprData(provider), providerName: encryprData(providerName), role: encryprData('users')}));
+        await setAddedProviders(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+    };
+
+    //eslint-disable-next-line
+    const validateProvider = () => {
+
+    };
+
+    return (
+        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item">
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_code">
+                <label htmlFor="">Code:</label>
+                <input type="text" value={code} onChange={(e) => setCode(e.target.value)}/>
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
+                <label htmlFor="">ProviderName:</label>
+                <input type="text" value={providerName} onChange={(e) => setProviderName(e.target.value)}/>
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_url">
+                    <label htmlFor="">ProviderUrl:</label>
+                    <input type="text" value={provider} onChange={(e) => setProvider(e.target.value)}/>
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_delete" onClick={() => setAddedProviders(prev => [...prev.slice(0, index), ...prev.slice(index + 1)])}>
+                x
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_add" onClick={addNewProviderUser}>
+                <i className="fa-solid fa-check"></i>
             </div>
         </div>
     )
