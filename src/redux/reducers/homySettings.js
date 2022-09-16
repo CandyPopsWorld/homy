@@ -85,7 +85,7 @@ const homySettings = createReducer(initialState, builder => {
                     state.homySettings.settings.interface.showMainBookmarks = !state.homySettings.settings.interface.showMainBookmarks;
                     homySettingsData.settings.interface.showMainBookmarks = state.homySettings.settings.interface.showMainBookmarks;
                     break;
-                case 16:
+                case 27:
                     state.homySettings.settings.interface.showBtnAllSettings = !state.homySettings.settings.interface.showBtnAllSettings;
                     homySettingsData.settings.interface.showBtnAllSettings = state.homySettings.settings.interface.showBtnAllSettings;
                     break;

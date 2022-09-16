@@ -349,6 +349,20 @@
                             margin-left: 10px;
                         }
 
+                        &_danger_zone_list{
+                            @include flex($flexDirection: column, $align-items: flex-start, $justifyContent: flex-start);
+                            &_item{
+                                color: aqua;
+                                cursor: pointer;
+                                p{
+                                    margin: 10px 0;
+                                    &:hover{
+                                        color: red;
+                                    }
+                                }
+                            }
+                        }
+
                         &_default_providers{
                             &_list{
                                 @include flex($flexDirection: column, $justifyContent: flex-start, $align-items: flex-start);
@@ -416,6 +430,9 @@
                                     }
                                 }
                             }
+                        }
+                        &_description{
+                            @include flex($justifyContent: flex-start, $align-items: flex-start);
                         }
                     }
 

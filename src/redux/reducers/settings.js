@@ -1,8 +1,9 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { localstorageFetched, changeDisplaySettingsModal, addUserProvider } from "../actions/settings";
+import { localstorageFetched, changeDisplaySettingsModal, addUserProvider, deleteUserProvider, updateUserProvider } from "../actions/settings";
 import { decryptData } from "../../utils/functions/decryptData";
 import { getItemLocalStorage, setItemLocalStorage } from "../../utils/functions/localstorage";
 import { _pathLocalstorage_homy } from "../../utils/data/localstorage";
+import { encryprData } from "../../utils/functions/encryprData";
 
 const initialState = {
     settings: {},
@@ -35,7 +36,29 @@ const settings = createReducer(initialState, builder => {
             });
             state.settings.searchProviders = arrayProviders;
             setItemLocalStorage(_pathLocalstorage_homy, homyData);
-            console.log(state.settings.searchProviders);
+        })
+        .addCase(deleteUserProvider, (state, action) => {
+            const homyData = getItemLocalStorage(_pathLocalstorage_homy);
+            const index = homyData.searchProviders.findIndex(item => item.code === action.payload);
+            homyData.searchProviders.splice(index, 1);
+            let arrayProviders = [];
+            homyData.searchProviders.forEach(({code, provider, providerName, role}) => {
+                arrayProviders.push({code: decryptData(code), provider: decryptData(provider), providerName: decryptData(providerName), role: decryptData(role)});
+            });
+            state.settings.searchProviders = arrayProviders;
+            setItemLocalStorage(_pathLocalstorage_homy, homyData);
+        })
+        .addCase(updateUserProvider, (state, action) => {
+            const homyData = getItemLocalStorage(_pathLocalstorage_homy);
+            const index = state.settings.searchProviders.findIndex(item => item.code === action.payload.code);
+            const newObj = {code: encryprData(action.payload.newCode), provider: encryprData(action.payload.provider), providerName: encryprData(action.payload.providerName), role: encryprData(action.payload.role)};
+            homyData.searchProviders = [...homyData.searchProviders.slice(0, index), newObj, ...homyData.searchProviders.slice(index + 1)];
+            setItemLocalStorage(_pathLocalstorage_homy, homyData);
+            let arrayProviders = [];
+            homyData.searchProviders.forEach(({code, provider, providerName, role}) => {
+                arrayProviders.push({code: decryptData(code), provider: decryptData(provider), providerName: decryptData(providerName), role: decryptData(role)});
+            });
+            state.settings.searchProviders = arrayProviders;
         })
         .addDefaultCase(() => {});
 });

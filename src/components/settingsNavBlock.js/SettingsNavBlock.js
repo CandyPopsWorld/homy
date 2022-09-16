@@ -1,10 +1,12 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uid } from 'uid';
 import { changeActiveTheme, changeGeneralAndInterfaceSettings } from '../../redux/actions/homySettings';
-import { addUserProvider } from '../../redux/actions/settings';
+import { addUserProvider, deleteUserProvider, updateUserProvider } from '../../redux/actions/settings';
 import { colorsThemesSchemes, mainThemeSchemes } from '../../utils/data/themes';
 import { encryprData } from '../../utils/functions/encryprData';
+import { validateProvider } from '../../utils/functions/validateProvider';
 
 const SettingsNavBlock = () => {
 
@@ -39,6 +41,10 @@ const SettingsNavBlock = () => {
     ];
 
     const [addedProviders, setAddedProviders] = useState([]);
+
+    useEffect(() => {
+        setAddedProviders([]);
+    }, [])
 
 
     //eslint-disable-next-line
@@ -107,20 +113,7 @@ const SettingsNavBlock = () => {
         elements_users_providers = searchProviders.map(item => {
             if(item.role === 'users'){
                 return (
-                    <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item">
-                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_code">
-                            <label htmlFor="">Code:</label>
-                            <input type="text" value={item.code}/>
-                        </div>
-                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
-                            <label htmlFor="">ProviderName:</label>
-                            <input type="text" value={item.providerName}/>
-                        </div>
-                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
-                            <label htmlFor="">ProviderUrl:</label>
-                            <input type="text" value={item.provider}/>
-                        </div>
-                    </div>
+                    <UserProviderItem code={item.code} provider={item.provider} providerName={item.providerName} key={item.code}/>
                 )
             }
         })
@@ -132,8 +125,6 @@ const SettingsNavBlock = () => {
             return  <AddedProviderItem key={uid} addedProviders={addedProviders} setAddedProviders={setAddedProviders} uid={uid}/>
         })
     }
-
-    console.log(elements_users_providers);
 
     return (
         <div className="homy_settings_wrapper_nav_block_item">
@@ -234,6 +225,19 @@ const SettingsNavBlock = () => {
                             <button onClick={() => setAddedProviders(prev => [...prev, {uid: uid(100)}])}>Добавить провайдера</button>
                         </div>
                     </div>
+                    <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_providers">
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_header">
+                            <h3 id='developer_settings'>Для разработчиков</h3>
+                        </div>
+                        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_description">
+                            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_description_item">
+                                <span>Исходный код:</span>
+                            </div>
+                            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_description_item">
+                                <a style={{marginLeft: '10px', color: 'aqua'}} href="https://github.com/CandyPopsWorld/homy">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -249,13 +253,10 @@ const AddedProviderItem = ({addedProviders, setAddedProviders, uid}) => {
     const index = addedProviders.findIndex(item => item.uid === uid);
 
     const addNewProviderUser = async () => {
-        await dispatch(addUserProvider({code: encryprData(code), provider: encryprData(provider), providerName: encryprData(providerName), role: encryprData('users')}));
-        await setAddedProviders(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
-    };
-
-    //eslint-disable-next-line
-    const validateProvider = () => {
-
+        if(validateProvider(code, providerName, provider)){
+            await dispatch(addUserProvider({code: encryprData(code), provider: encryprData(provider), providerName: encryprData(providerName), role: encryprData('users')}));
+            await setAddedProviders(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+        }
     };
 
     return (
@@ -277,6 +278,49 @@ const AddedProviderItem = ({addedProviders, setAddedProviders, uid}) => {
             </div>
             <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_add" onClick={addNewProviderUser}>
                 <i className="fa-solid fa-check"></i>
+            </div>
+        </div>
+    )
+};
+
+const UserProviderItem = ({code, providerName, provider}) => {
+
+    const dispatch = useDispatch();
+    const [codeLocal, setCodeLocal] = useState(code);
+    const [providerNameLocal, setProviderNameLocal] = useState(providerName);
+    const [providerLocal, setProviderLocal] = useState(provider);
+
+    return (
+        <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item">
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_code">
+                <label htmlFor="">Code:</label>
+                <input type="text" value={codeLocal} onChange={async (e) => {
+                    await setCodeLocal(e.target.value);
+                    if(validateProvider(codeLocal, providerNameLocal, providerLocal)){
+                        await dispatch(updateUserProvider({newCode: codeLocal, code: code, provider: providerLocal, providerName: providerNameLocal, role: 'users'}));
+                    }
+                }}/>
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
+                <label htmlFor="">ProviderName:</label>
+                <input type="text" value={providerNameLocal} onChange={async (e) => {
+                    await setProviderNameLocal(e.target.value);
+                    if(validateProvider(codeLocal, providerNameLocal, providerLocal)){
+                        await dispatch(updateUserProvider({newCode: codeLocal, code: code, provider: providerLocal, providerName: providerNameLocal, role: 'users'}));
+                    }
+                }}/>
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_provider_name">
+                <label htmlFor="">ProviderUrl:</label>
+                <input type="text" value={providerLocal} onChange={async (e) => {
+                    await setProviderLocal(e.target.value);
+                    if(validateProvider(codeLocal, providerNameLocal, providerLocal)){
+                        await dispatch(updateUserProvider({newCode: codeLocal,code: code, provider: providerLocal, providerName: providerNameLocal, role: 'users'}));
+                    }
+                }}/>
+            </div>
+            <div className="homy_settings_wrapper_nav_block_item_settings_wrapper_content_block_default_providers_list_item_delete" onClick={() => dispatch(deleteUserProvider(codeLocal))}>
+                x
             </div>
         </div>
     )
